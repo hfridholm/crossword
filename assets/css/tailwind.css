@@ -1,3 +1,30 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer components
+{
+  .sign-title {
+    @apply text-3xl text-center mb-2;
+  }
+
+  .sign-label-input {
+    @apply flex flex-col mb-2;
+  }
+
+  .sign-label {
+    @apply text-xs text-gray-600;
+  }
+
+  .sign-input {
+    @apply rounded-md p-1 pl-2;
+  }
+
+  .sign-button {
+    @apply p-2 rounded-md w-full font-extrabold text-white;
+  }
+
+  .sign-button-div {
+    @apply flex justify-center mt-4;
+  }
+}
