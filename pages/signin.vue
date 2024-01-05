@@ -5,11 +5,11 @@
       <form id="signin-form" @submit.prevent="signin_handler">
         <div class="sign-label-input">
           <label class="sign-label" for="signin-email">Email</label>
-          <input class="sign-input" id="signin-email" type="email" required v-model="inputEmail" />
+          <input class="sign-input" id="signin-email" type="email" required v-model="email" />
         </div>
         <div class="sign-label-input">
           <label class="sign-label" for="signin-password">Password</label>
-          <input class="sign-input" id="signin-password" type="password" required v-model="inputPassword" />
+          <input class="sign-input" id="signin-password" type="password" required v-model="password" />
         </div>
         <div class="sign-button-div">
           <button class="sign-button bg-green-400" type="submit">Sign in</button>
@@ -23,12 +23,12 @@
 <script setup>
 import { ref } from "vue";
 
-const inputEmail = ref("");
-const inputPassword = ref("");
+const email = ref("");
+const password = ref("");
 
 function signin_handler()
 {
-  userSignin(inputEmail.value, inputPassword.value).then((credential) => 
+  userSignin(email.value, password.value).then((credentials) => 
   {
 
   }).catch((error) => 
