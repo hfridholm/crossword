@@ -3,68 +3,60 @@ import {
   signInWithEmailAndPassword, 
   onAuthStateChanged,
   signOut
-} from "firebase/auth";
+} from "firebase/auth"
 
-import { doc, setDoc, getDoc } from "firebase/firestore";
+import {
+  doc, 
+  setDoc, 
+  getDoc 
+} from "firebase/firestore"
 
-export const userSignup = async (email, password, displayName, username) =>
-{
-  const { $auth, $firestore } = useNuxtApp();
+export const signUpUser = async (email, password, displayName, username) => {
+  const { $auth, $firestore } = useNuxtApp()
 
-  return await createUserWithEmailAndPassword($auth, email, password).then((credentials) =>
-  {
-    return setDoc(doc($firestore, "users", credentials.user.uid),
-    {
+  return await createUserWithEmailAndPassword($auth, email, password).then((credentials) => {
+    return setDoc(doc($firestore, "users", credentials.user.uid), {
       displayName: displayName,
       username: username
-    });
-  }).then(() =>
-  {
+    })
+  }).then(() => {
 
-  }).catch((error) =>
-  {
+  }).catch((error) => {
 
-  });
-};
+  })
+}
 
-export const userSignin = async (email, password) =>
-{
-  const { $auth } = useNuxtApp();
+export const signInUser = async (email, password) => {
+  const { $auth } = useNuxtApp()
 
-  return await signInWithEmailAndPassword($auth, email, password);
-};
+  return await signInWithEmailAndPassword($auth, email, password)
+}
 
-export const userSignout = async () =>
-{
-  const { $auth } = useNuxtApp();
+export const signOutUser = async () => {
+  const { $auth } = useNuxtApp()
 
-  return await signOut($auth);
-};
+  return await signOut($auth)
+}
 
-export const userInit = async () =>
-{
-  const { $auth } = useNuxtApp();
-  const firebaseUser = useFirebaseUser();
+export const initUser = async () => {
+  const { $auth } = useNuxtApp()
 
-  firebaseUser.value = $auth?.currentUser;
+  const firebaseUser = useFirebaseUser()
 
-  onAuthStateChanged($auth, (user) =>
-  {
-    if(user)
-    {
-      console.log("User has signed in as " + user.uid);
+  firebaseUser.value = $auth?.currentUser
+
+  onAuthStateChanged($auth, (user) => {
+    if(user) {
+      console.log("User has signed in as " + user.uid)
+    } else {
+      console.log("User has signed out")
     }
-    else
-    {
-      console.log("User has signed out");
-    }
-    firebaseUser.value = user;
-  });
-};
+    firebaseUser.value = user
+  })
+}
 
-export const getDocument = async (collection, id) =>
-{
-  const { $firestore } = useNuxtApp();
+export const getDocument = async (collection, id) => {
+  const { $firestore } = useNuxtApp()
 
-  return await getDoc(doc($firestore, collection, id));
-};
+  return await getDoc(doc($firestore, collection, id))
+}

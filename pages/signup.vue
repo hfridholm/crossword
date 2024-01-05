@@ -2,9 +2,9 @@
   <div id="page" class="h-screen flex justify-center items-center bg-gray-100">
     <div class="h-fit">
       <h1 class="sign-title">Sign up</h1>
-      <form id="signup-form" @submit.prevent="signup_handler">
+      <form id="signup-form" @submit.prevent="handleSignup">
         <div class="sign-label-input">
-          <label class="sign-label" for="signup-display-name">Display Name</label>
+          <label class="sign-label" for="signup-display-name">Display name</label>
           <input class="sign-input" id="signup-display-name" type="name" required v-model="displayName" />
         </div>
         <div class="sign-label-input">
@@ -20,7 +20,7 @@
           <input class="sign-input" id="signup-password" type="password" required v-model="password" />
         </div>
         <div class="sign-label-input">
-          <label class="sign-label" for="signup-confirm">Confirm Password</label>
+          <label class="sign-label" for="signup-confirm">Confirm password</label>
           <input class="sign-input" id="signup-confirm" type="password" required v-model="confirmPassword" />
         </div>
         <div class="sign-button-div">
@@ -32,39 +32,34 @@
 </template>
 
 <script setup>
-import { ref } from "vue";
+import { ref } from "vue"
 
-const displayName = ref("");
-const username = ref("");
-const email = ref("");
+const displayName = ref("")
+const username = ref("")
+const email = ref("")
 
-const password = ref("");
-const confirmPassword = ref("");
+const password = ref("")
+const confirmPassword = ref("")
 
-function signup_handler()
-{
-  if(password.value != confirmPassword.value)
-  {
-    console.log("Different inputted passwords");
+function handleSignup() {
+  if(password.value != confirmPassword.value) {
+    console.log("Different inputted passwords")
 
-    return null;
+    return 
   }
 
   // This should already be checked in the form
-  if(!displayName.value || !email.value || !password.value)
-  {
-    console.log("Form not fully inputted");
+  if(!displayName.value || !email.value || !password.value) {
+    console.log("Form not fully inputted")
 
-    return null;
+    return
   }
 
-  userSignup(email.value, password.value, displayName.value, username.value).then(() =>
-  {
-    console.log("Signed up user");
-  }).catch((error) =>
-  {
-    console.log("Could not sign up");
-    console.log(error.message);
-  });
+  signUpUser(email.value, password.value, displayName.value, username.value).then(() => {
+    console.log("Signed up user")
+  }).catch((error) => {
+    console.log("Could not sign up")
+    console.log(error.message)
+  })
 }
 </script>
