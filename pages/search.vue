@@ -1,9 +1,6 @@
 <template>
   <div class="">
     <div class="flex flex-col items-center">
-      <form @submit.prevent="handleSearch" class="flex w-full justify-center">
-        <input v-model="search" placeholder="Search" class="border-solid border-gray-800 border-2 p-1 rounded-md w-full ml-10 mr-10">
-      </form>
       <div class="flex justify-center space-x-10">
         <button @click="searchType('users')" class="search-tab">Users</button>
         <button @click="searchType('crosswords')" class="search-tab">Crosswords</button>
@@ -39,12 +36,15 @@ import {
   getDocs
 } from "firebase/firestore"
 
-const route = useRoute()
-
-const search = ref(route.query.q)
-var queryType = route.query.type ?? "users"
+import {
+  navigateSearch
+} from "~/composables/useSearch"
 
 const { $firestore } = useNuxtApp()
+
+const route = useRoute()
+
+var queryType = route.query.type ?? "users"
 
 const users = ref([])
 const crosswords = ref([])
@@ -85,24 +85,5 @@ const searchType = async (newType) => {
   newQuery.type = newType
 
   return navigateSearch(newQuery)
-}
-
-// Search for whats inputted 
-const handleSearch = async () => {
-  const newQuery = {...route.query}
-
-  newQuery.q = search.value
-
-  return navigateSearch(newQuery)
-}
-
-// Navigate to search with new queries
-const navigateSearch = async (newQuery) => {
-  return await navigateTo({
-    path: "/search",
-    query: newQuery
-  }, {
-    replace: true
-  })
 }
 </script>
