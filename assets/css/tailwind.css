@@ -35,4 +35,9 @@
   .sign-question-link {
     @apply text-cyan-400;
   }
+
+  .profile-tab
+  {
+    @apply text-2xl text-gray-800
+  }
 }
