@@ -1,7 +1,8 @@
 <template>
   <header class="flex justify-between p-1 pr-2 pl-2 h-16 border-solid border-gray-200 border-b-2">
-    <div class="flex">
+    <div class="flex justify-start space-x-5 items-center">
       <NuxtLink v-if="firebaseUser" :to="username" class="flex items-center text-2xl text-gray-800 hover:cursor-pointer">Profile</NuxtLink>
+      <NuxtLink v-if="firebaseUser" to="settings" class="flex items-center text-2xl text-gray-800 hover:cursor-pointer">Settings</NuxtLink>
     </div>
     <div class="flex justify-end space-x-5 items-center">
       <NuxtLink v-if="firebaseUser" @click="handleSignOut" class="flex items-center text-2xl text-gray-800 hover:cursor-pointer">Sign out</NuxtLink>
@@ -37,9 +38,9 @@ watch(firebaseUser, () => {
 
 function handleSignOut() {
   signOutUser().then(() => {
-    
+    return navigateTo("/signin")
   }).catch((error) => {
-    console.log("Could not sign out")
+    console.log(error)
   })
 }
 </script>

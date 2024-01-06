@@ -2,13 +2,15 @@ import {
   createUserWithEmailAndPassword, 
   signInWithEmailAndPassword, 
   onAuthStateChanged,
-  signOut
+  signOut,
+  deleteUser as deleteAuthUser
 } from "firebase/auth"
 
 import {
   doc, 
   setDoc, 
-  getDoc 
+  getDoc,
+  deleteDoc
 } from "firebase/firestore"
 
 export const signUpUser = async (email, password, displayName, username) => {
@@ -20,9 +22,11 @@ export const signUpUser = async (email, password, displayName, username) => {
       username: username
     })
   }).then(() => {
-
+    return setDoc(doc($firestore, "usernames", username), {
+      uid: $auth.currentUser.uid
+    })
   }).catch((error) => {
-
+    console.log(error)
   })
 }
 
@@ -52,6 +56,42 @@ export const initUser = async () => {
       console.log("User has signed out")
     }
     firebaseUser.value = user
+  })
+}
+
+export const deleteUser = async () => {
+  const { $auth, $firestore } = useNuxtApp()
+
+  if(!$auth.currentUser) return await createError({
+    statusCode: 409,
+    statusMessage: "User not logged in"
+  })
+
+  const user = $auth.currentUser
+
+  var username = null
+
+  return await getDoc(doc($firestore, "users", user.uid)).then((docSnap) => {
+    if(!docSnap.exists()) throw createError({
+      statusCode: 406,
+      statusMessage: "User doc for " + user.uid + " does not exist"
+    })
+
+    const data = docSnap.data()
+
+    username = data.username
+
+    return deleteDoc(doc($firestore, "users", user.uid))
+  }).then(() => {
+    return deleteDoc(doc($firestore, "usernames", username))
+  }).then(() => {
+    return deleteAuthUser(user)
+  }).then(() => {
+    console.log("Deleted user: " + username)
+
+    return navigateTo("/")
+  }).catch((error) => {
+    console.log(error)
   })
 }
 
