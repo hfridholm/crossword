@@ -2,7 +2,7 @@
   <div id="page" class="h-screen flex justify-center items-center bg-gray-100">
     <div class="h-fit">
       <h1 class="sign-title">Sign up</h1>
-      <form id="signup-form" @submit.prevent="handleSignup">
+      <form id="signup-form" @submit.prevent="handleSignUp">
         <div class="sign-label-input">
           <label class="sign-label" for="signup-display-name">Display name</label>
           <input class="sign-input" id="signup-display-name" type="name" required v-model="displayName" />
@@ -27,6 +27,7 @@
           <button class="sign-button bg-gray-400" type="submit">Sign up</button>
         </div>
       </form>
+      <p class="sign-question">Already have an account? <NuxtLink class="sign-question-link" to="/signin">Sign in</NuxtLink></p>
     </div>
   </div>
 </template>
@@ -41,7 +42,7 @@ const email = ref("")
 const password = ref("")
 const confirmPassword = ref("")
 
-function handleSignup() {
+function handleSignUp() {
   if(password.value != confirmPassword.value) {
     console.log("Different inputted passwords")
 

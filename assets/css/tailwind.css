@@ -27,4 +27,12 @@
   .sign-button-div {
     @apply flex justify-center mt-4;
   }
+  
+  .sign-question {
+    @apply text-center mt-2 text-sm text-gray-600;
+  }
+
+  .sign-question-link {
+    @apply text-cyan-400;
+  }
 }
