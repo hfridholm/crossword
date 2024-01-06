@@ -36,8 +36,11 @@
     @apply text-cyan-400;
   }
 
-  .profile-tab
-  {
-    @apply text-2xl text-gray-800
+  .profile-tab {
+    @apply text-2xl text-gray-800;
+  }
+
+  .search-tab {
+    @apply text-2xl text-gray-800;
   }
 }
