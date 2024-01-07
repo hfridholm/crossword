@@ -10,8 +10,16 @@ definePageMeta({
   middleware: ["auth"]
 })
 
-import { ref, watch, onMounted } from "vue"
-import { doc, getDoc } from "firebase/firestore"
+import {
+  ref,
+  watch, 
+  onMounted 
+} from "vue"
+
+import {
+  doc,
+  getDoc
+} from "firebase/firestore"
 
 const { $firestore } = useNuxtApp()
 
@@ -28,8 +36,6 @@ watch(firebaseUser, () => {
 
 function initPage() {
   if(firebaseUser.value) {
-    console.log(firebaseUser.value.uid)
-
     getDoc(doc($firestore, "users", firebaseUser.value.uid)).then((docSnap) => {
       if(!docSnap.exists()) throw createError({
         statusCode: 406,

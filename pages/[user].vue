@@ -8,6 +8,17 @@
     </div>
     <div>
       {{ user }}
+
+      <div v-if="firebaseUser">
+        <button v-if="ownPage" class="flex h-min items-center border-solid border-gray-800 border-4 text-2xl text-gray-800 p-1 rounded-lg hover:cursor-pointer">Edit</button>
+        <button v-else-if="following" @click="handleUnfollow" class="flex h-min items-center border-solid border-gray-800 border-4 text-2xl text-gray-800 p-1 rounded-lg hover:cursor-pointer">Unfollow</button>
+        <button v-else @click="handleFollow" class="flex h-min items-center border-solid border-gray-800 border-4 text-2xl text-gray-800 p-1 rounded-lg hover:cursor-pointer">Follow</button>
+      </div>
+      <div v-else>
+        <NuxtLink to="/signin">
+          <button class="flex h-min items-center border-solid border-gray-800 border-4 text-2xl text-gray-800 p-1 rounded-lg hover:cursor-pointer">Follow</button>
+        </NuxtLink>
+      </div>
     </div>
     <div v-if="tab === 'crosswords'">
       Crosswords
@@ -54,6 +65,29 @@ watch(() => route.query, (newQuery, oldQuery) => {
   tab.value = newQuery.tab
 })
 
+var ownPage = false
+const following = ref(false)
+
+function handleFollow() {
+  return followUser(route.params.user)
+}
+
+function handleUnfollow() {
+  return unfollowUser(route.params.user)
+}
+
+const followUser = async (username) => {
+  console.log("follow " + username)
+
+  following.value = true
+}
+
+const unfollowUser = async (username) => {
+  console.log("unfollow " + username)
+
+  following.value = false
+}
+
 function initPage() {
   if(firebaseUser.value) {
     getDocument("users", firebaseUser.value.uid).then((docSnap) => {
@@ -68,6 +102,7 @@ function initPage() {
 
       if(route.params.user === username) {
         console.log(username + " is signed in to his own page")
+        ownPage = true
       } else {
         console.log(username + " is signed in to " + route.params.user + "'s page")
       }
