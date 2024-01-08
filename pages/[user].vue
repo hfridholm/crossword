@@ -42,6 +42,10 @@ import {
   onMounted 
 } from "vue"
 
+import {
+  httpsCallable
+} from "firebase/functions"
+
 const firebaseUser = useFirebaseUser()
 const route = useRoute()
 
@@ -50,6 +54,8 @@ const tab = ref(route.query.tab)
 const user = ref({})
 
 const fatalError = ref(null)
+
+const { $functions } = useNuxtApp()
 
 // When the code determines a fatalError, trigger error page
 watch(fatalError, () => {
@@ -78,6 +84,14 @@ function handleUnfollow() {
 
 const followUser = async (username) => {
   console.log("follow " + username)
+
+  const addAdminRole = httpsCallable($functions, "addAdminRole")
+
+  addAdminRole({username: "bob"}).then((result) => {
+    console.log(result)
+  }).catch((error) => {
+    console.log(error)
+  })
 
   following.value = true
 }

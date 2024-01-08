@@ -12,6 +12,11 @@ import {
   connectAuthEmulator
 } from "firebase/auth"
 
+import {
+  getFunctions,
+  connectFunctionsEmulator
+} from "firebase/functions"
+
 export default defineNuxtPlugin((nuxtApp) => {
   const config = useRuntimeConfig()
 
@@ -20,13 +25,16 @@ export default defineNuxtPlugin((nuxtApp) => {
 
   const auth = getAuth(app)
   const firestore = getFirestore(app)
+  const functions = getFunctions(app)
 
   // Initialize Firebase with local emulator
   connectAuthEmulator(auth, "http://localhost:9099")
   connectFirestoreEmulator(firestore, "localhost", 8080)
+  connectFunctionsEmulator(functions, "localhost", 5001)
 
   nuxtApp.provide("auth", auth)
   nuxtApp.provide("firestore", firestore)
+  nuxtApp.provide("functions", functions)
 
   initUser()
 })
