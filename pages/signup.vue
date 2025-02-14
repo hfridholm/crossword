@@ -37,7 +37,9 @@ definePageMeta({
   middleware: ["auth"]
 })
 
-import { ref } from "vue"
+import {
+  ref
+} from "vue"
 
 const displayName = ref("")
 const username = ref("")
@@ -50,19 +52,30 @@ function handleSignUp() {
   if(password.value != confirmPassword.value) {
     console.log("Different inputted passwords")
 
-    return 
+    return {
+      error: "Different inputted passwords"
+    }
   }
 
   // This should already be checked in the form
   if(!displayName.value || !email.value || !password.value) {
     console.log("Form not fully inputted")
 
-    return
+    return {
+      error: "Form not fully inputted"
+    }
   }
 
-  signUpUser(email.value, password.value, displayName.value, username.value).then(() => {
+  return signUpUser({
+    email: email.value,
+    password: password.value,
+    displayName: displayName.value,
+    username: username.value
+  })
+  .then(() => {
     console.log("Signed up user")
-  }).catch((error) => {
+  })
+  .catch(error => {
     console.log("Could not sign up")
     console.log(error.message)
   })

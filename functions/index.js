@@ -7,31 +7,20 @@ admin.initializeApp({
   credential: admin.credential.cert(serviceAccount)
 })
 
-exports.addAdminRole = functions.https.onCall((data, context) => {
-  // Check if the caller has the permission to make someone admin
-  if(context.auth.token.admin !== true) {
-    return {
-      error: "Only admins can add other admins"
-    }
-  }
+// Import functions from other files
+const { createUser } = require("./createUser.js")
+const { deleteUser } = require("./deleteUser.js")
 
-  return admin.firestore().collection("usernames").doc(data.username).get().then((docSnap) => {
-    if(!docSnap.exists) {
-      return {
-        error: `Username doc for ${data.username} does not exist`
-      }
-    }
+const { followUser } = require("./followUser.js")
+const { unfollowUser } = require("./unfollowUser.js")
 
-    const docData = docSnap.data()
+const { makeUserAdmin } = require("./makeUserAdmin.js")
 
-    return admin.auth().setCustomUserClaims(docData.uid, {
-      admin: true
-    })
-  }).then(() => {
-    return {
-      message: `Success! Made ${data.username} an admin`
-    }
-  }).catch((error) => {
-    return error
-  })
-})
+// Export functions
+exports.createUser = createUser
+exports.deleteUser = deleteUser
+
+exports.followUser = followUser
+exports.unfollowUser = unfollowUser
+
+exports.makeUserAdmin = makeUserAdmin

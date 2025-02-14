@@ -29,8 +29,14 @@
 </template>
 
 <script setup>
-import { ref, watch } from "vue"
-import { navigateSearch } from "~/composables/useSearch"
+import {
+  ref, 
+  watch 
+} from "vue"
+
+import {
+  navigateSearch
+} from "~/composables/useSearch"
 
 const firebaseUser = useFirebaseUser()
 
@@ -49,9 +55,11 @@ watch(() => route.path, () => {
 // Wait for firebaseUser to be initialized
 watch(firebaseUser, () => {
   if(firebaseUser.value) {
-    getDocument("users", firebaseUser.value.uid).then((docSnap) => {
-      if(!docSnap.exists()) return
-
+    getDocument("users", firebaseUser.value.uid)
+    .then(docSnap => {
+      if(!docSnap.exists()) {
+        return { error: "Document does not exist" }
+      }
       const data = docSnap.data()
 
       username.value = data.username
@@ -70,9 +78,11 @@ const handleSearch = async () => {
 }
 
 function handleSignOut() {
-  signOutUser().then(() => {
+  return signOutUser()
+  .then(() => {
     return navigateTo("/signin")
-  }).catch((error) => {
+  })
+  .catch(error => {
     console.log(error)
   })
 }

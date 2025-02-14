@@ -75,52 +75,49 @@ var ownPage = false
 const following = ref(false)
 
 function handleFollow() {
-  return followUser(route.params.user)
+  return httpsCallable($functions, "unfollowUser")({uid: user.uid})
+  .then(result => {
+    console.log(result)
+    following.value = false
+  })
+  .catch(error => {
+    console.log(error)
+  })
 }
 
 function handleUnfollow() {
-  return unfollowUser(route.params.user)
-}
-
-const followUser = async (username) => {
-  console.log("follow " + username)
-
-  const addAdminRole = httpsCallable($functions, "addAdminRole")
-
-  addAdminRole({username: "bob"}).then((result) => {
+  return httpsCallable($functions, "followUser")({uid: user.uid})
+  .then(result => {
     console.log(result)
-  }).catch((error) => {
+    following.value = true
+  })
+  .catch(error => {
     console.log(error)
   })
-
-  following.value = true
 }
 
-const unfollowUser = async (username) => {
-  console.log("unfollow " + username)
-
-  following.value = false
-}
-
+// Get the logged in user
 function initPage() {
   if(firebaseUser.value) {
-    getDocument("users", firebaseUser.value.uid).then((docSnap) => {
+    getDocument("users", firebaseUser.value.uid)
+    .then(docSnap => {
       if(!docSnap.exists()) throw createError({
         statusCode: 406,
         statusMessage: "User doc for " + firebaseUser.value.uid + " does not exist"
       })
 
-      const data = docSnap.data()
-
-      const username = data.username
+      const { username } = docSnap.data()
 
       if(route.params.user === username) {
         console.log(username + " is signed in to his own page")
         ownPage = true
       } else {
         console.log(username + " is signed in to " + route.params.user + "'s page")
+
+        // Check if the user is already following
       }
-    }).catch((error) => {
+    })
+    .catch(error => {
       console.log(error)
     })
   } else {
@@ -128,32 +125,37 @@ function initPage() {
   }
 }
 
-// When the page is loaded
-onMounted(() => {
-  initPage()
-
-  getDocument("usernames", route.params.user).then((docSnap) => {
+// Load the user for the current page
+function loadUser() {
+  return getDocument("usernames", route.params.user)
+  .then(docSnap => {
     if(!docSnap.exists()) throw createError({
       statusCode: 402,
       statusMessage: "Usernames doc for " + route.params.user + " does not exist"
     })
 
-    const data = docSnap.data()
+    const { uid } = docSnap.data()
 
-    return getDocument("users", data.uid)
-  }).then((docSnap) => {
+    return getDocument("users", uid)
+  })
+  .then(docSnap => {
     if(!docSnap.exists()) throw createError({
       statusCode: 401,
       statusMessage: "User doc for " + route.params.user + " does not exist"
     })
 
-    const data = docSnap.data()
-
-    user.value = data
-  }).catch((error) => {
+    user.value = docSnap.data()
+  })
+  .catch(error => {
     console.log(error)
     fatalError.value = error
   })
+}
+
+// When the page is loaded
+onMounted(() => {
+  initPage()
+  loadUser()
 })
 
 // Wait for firebaseUser to be initialized

@@ -25,15 +25,18 @@ definePageMeta({
   middleware: ["auth"]
 })
 
-import { ref } from "vue"
+import {
+  ref 
+} from "vue"
 
 const email = ref("")
 const password = ref("")
 
 function handleSignIn() {
-  signInUser(email.value, password.value).then((credentials) => {
+  return signInUser(email.value, password.value)
+  .then((credentials) => {
 
-  }).catch((error) => {
+  }).catch(error => {
     console.log("Could not sign in")
   })
 }

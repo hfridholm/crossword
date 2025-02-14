@@ -27,13 +27,6 @@ const firebaseUser = useFirebaseUser()
 
 const username = ref("")
 
-// Watch if the user gets signed out, and redirect to /signin
-watch(firebaseUser, () => {
-  if(!firebaseUser.value) {
-    return navigateTo("/signin")
-  }
-})
-
 function initPage() {
   if(firebaseUser.value) {
     getDoc(doc($firestore, "users", firebaseUser.value.uid)).then((docSnap) => {
@@ -51,8 +44,13 @@ function initPage() {
   }
 }
 
+// Watch if the user gets signed out, and redirect to /signin
 watch(firebaseUser, () => {
   initPage()
+
+  if(!firebaseUser.value) {
+    return navigateTo("/signin")
+  }
 })
 
 onMounted(() => {
@@ -60,8 +58,8 @@ onMounted(() => {
 })
 
 function handleDeleteUser() {
-  console.log("Deleting user " + username.value + "...")
-
-  deleteUser(username.value)
+  if(firebaseUser.value) {
+    return deleteUser(firebaseUser.value.uid)
+  }
 }
 </script>
